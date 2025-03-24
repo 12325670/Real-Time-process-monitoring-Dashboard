@@ -1,0 +1,10 @@
+# Ignore Python virtual environment
+venv/
+__pycache__/
+
+# Ignore Node.js dependencies (if any)
+node_modules/
+
+# Ignore system-generated files
+*.log
+.DS_Store
