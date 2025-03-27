@@ -1,49 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Real-Time Process Monitor</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Monitor</title>
+    <link rel="stylesheet" href="/static/style.css"> <!-- Updated path -->
 </head>
 <body>
-    <h1>System Monitor Dashboard</h1>
-    
-    <!-- System Metrics -->
-    <div class="metrics">
-        <div class="metric">
-            <h3>CPU Usage</h3>
-            <canvas id="cpuChart"></canvas>
-        </div>
-        <div class="metric">
-            <h3>Memory Usage</h3>
-            <canvas id="memoryChart"></canvas>
-        </div>
+    <h1>Real-Time Process Monitoring Dashboard</h1>
+    <div class="container">
+        <p><strong>CPU Usage:</strong> <span id="cpu">Loading...</span>%</p>
+        <p><strong>Memory Usage:</strong> <span id="memory">Loading...</span>%</p>
+        <p><strong>Running Processes:</strong> <span id="processes">Loading...</span></p>
     </div>
-
-    <!-- Process Table -->
-    <table id="processTable" class="display">
-        <thead>
-            <tr>
-                <th>PID</th>
-                <th>Name</th>
-                <th>CPU %</th>
-                <th>Memory %</th>
-                <th>Status</th>
-                <th>User</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="processBody"></tbody>
-    </table>
-
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <script src="/static/js/app.js"></script>
+    <script src="/static/script.js"></script> <!-- Updated path -->
 </body>
-</html><div class="metric">
-    <h3>System Logs</h3>
-    <textarea id="systemLogs" rows="10" cols="50" readonly></textarea>
-</div>
+</html>
+
