@@ -1,43 +1,24 @@
+from flask import Flask, jsonify, send_from_directory
 import psutil
-from flask import Flask, jsonify
-from flask_socketio import SocketIO
+from flask_cors import CORS
 
-app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")  # Allow all origins for development
+app = Flask(__name__, static_folder='../frontend/static', static_url_path='/static')
+CORS(app)
 
-# Fetch process data
-def get_processes():
-    processes = []
-    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent', 'status', 'username']):
-        processes.append(proc.info)
-    return processes
-
-# Fetch system metrics
-def get_system_metrics():
-    return {
-        "cpu": psutil.cpu_percent(),
-        "memory": psutil.virtual_memory().percent,
-        "disk": psutil.disk_usage('/').percent,
-        "network": psutil.net_io_counters().bytes_sent + psutil.net_io_counters().bytes_recv
+@app.route('/stats', methods=['GET'])
+def get_stats():
+    """Fetches CPU usage, memory usage, and running processes"""
+    stats = {
+        "cpu_usage": psutil.cpu_percent(interval=1),
+        "memory_usage": psutil.virtual_memory().percent,
+        "running_processes": len(psutil.pids())
     }
+    return jsonify(stats)
 
-# API endpoint for processes
-@app.route('/api/processes')
-def api_processes():
-    return jsonify(get_processes())
-
-# API endpoint for system metrics
-@app.route('/api/system')
-def api_system():
-    return jsonify(get_system_metrics())
-
-# Real-time updates via WebSocket
-@socketio.on('connect')
-def handle_connect():
-    while True:
-        socketio.emit('system_update', get_system_metrics())
-        socketio.emit('process_update', get_processes())
-        socketio.sleep(1)  # Update interval (1 second)
+@app.route('/')
+def serve_frontend():
+    """Serves the frontend HTML"""
+    return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, port=5000)
+    app.run(debug=True, port=5000)
