@@ -76,3 +76,38 @@ async function fetchStats() {
 // Fetch every 2 seconds
 setInterval(fetchStats, 2000);
 fetchStats();
+
+async function fetchProcesses() {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/processes');
+        const data = await response.json();
+        const table = document.getElementById("processTable");
+        table.innerHTML = ""; // Clear previous data
+
+        data.forEach(proc => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${proc.pid}</td>
+                <td>${proc.name}</td>
+                <td>${proc.cpu}</td>
+                <td>${proc.memory}</td>
+                <td><button onclick="killProcess(${proc.pid})">Kill</button></td>
+            `;
+            table.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Error fetching processes:", error);
+    }
+}
+
+// Fetch every 5 seconds
+setInterval(fetchProcesses, 5000);
+fetchProcesses();
+
+async function killProcess(pid) {
+    const response = await fetch(`http://127.0.0.1:5000/kill/${pid}`, { method: "POST" });
+    const result = await response.json();
+    alert(result.message || result.error);
+    fetchProcesses(); // Refresh process list
+}
+

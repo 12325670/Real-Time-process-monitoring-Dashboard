@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_file
 import psutil
 from flask_cors import CORS
 
@@ -19,6 +19,24 @@ def get_stats():
 def serve_frontend():
     """Serves the frontend HTML"""
     return send_from_directory(app.static_folder, 'index.html')
+@app.route('/processes', methods=['GET'])
+def get_processes():
+    """Fetches a list of running processes"""
+    process_list = []
+    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
+        try:
+            process_list.append({
+                "pid": proc.info['pid'],
+                "name": proc.info['name'],
+                "cpu": proc.info['cpu_percent'],
+                "memory": proc.info['memory_percent']
+            })
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            continue
+    return jsonify(process_list)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
+    
