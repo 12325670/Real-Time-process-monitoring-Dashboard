@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, send_file
 import psutil
 from flask_cors import CORS
@@ -18,7 +19,9 @@ def get_stats():
 @app.route('/')
 def serve_frontend():
     """Serves the frontend HTML"""
-    return send_from_directory(app.static_folder, 'index.html')
+    # index_path = os.path.abspath('../frontend/static/index.html')
+    return send_file(os.path.abspath('../frontend/static/index.html'))
+
 @app.route('/processes', methods=['GET'])
 def get_processes():
     """Fetches a list of running processes"""
@@ -35,8 +38,18 @@ def get_processes():
             continue
     return jsonify(process_list)
 
+@app.route('/kill/<int:pid>', methods=['POST'])
+def kill_process(pid):
+    """Kills a process by its PID"""
+    try:
+        process = psutil.Process(pid)
+        process.terminate()
+        return jsonify({"message": f"Process {pid} terminated."})
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
 
     
